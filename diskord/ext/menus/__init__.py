@@ -216,7 +216,7 @@ def button(emoji, **kwargs):
     """Denotes a method to be button for the :class:`Menu`.
 
     The methods being wrapped must have both a ``self`` and a ``payload``
-    parameter of type :class:`discord.RawReactionActionEvent`.
+    parameter of type :class:`diskord.RawReactionActionEvent`.
 
     The keyword arguments are forwarded to the :class:`Button` constructor.
 
@@ -239,7 +239,7 @@ def button(emoji, **kwargs):
 
     Parameters
     ------------
-    emoji: Union[:class:`str`, :class:`discord.PartialEmoji`]
+    emoji: Union[:class:`str`, :class:`diskord.PartialEmoji`]
         The emoji to use for the button.
     """
     def decorator(func):
@@ -293,7 +293,7 @@ class Menu(metaclass=_MenuMeta):
 
     Buttons should be marked with the :func:`button` decorator. Please note that
     this expects the methods to have a single parameter, the ``payload``. This
-    ``payload`` is of type :class:`discord.RawReactionActionEvent`.
+    ``payload`` is of type :class:`diskord.RawReactionActionEvent`.
 
     Attributes
     ------------
@@ -314,7 +314,7 @@ class Menu(metaclass=_MenuMeta):
     bot: Optional[:class:`commands.Bot`]
         The bot that is running this pagination session or ``None`` if it hasn't
         been started yet.
-    message: Optional[:class:`discord.Message`]
+    message: Optional[:class:`diskord.Message`]
         The message that has been sent for handling the menu. This is the returned
         message of :meth:`send_initial_message`. You can set it in order to avoid
         calling :meth:`send_initial_message`\, if for example you have a pre-existing
@@ -338,7 +338,7 @@ class Menu(metaclass=_MenuMeta):
         self._lock = asyncio.Lock()
         self._event = asyncio.Event()
 
-    @discord.utils.cached_property
+    @diskord.utils.cached_property
     def buttons(self):
         """Retrieves the buttons that are to be used for this menu session.
 
@@ -430,7 +430,7 @@ class Menu(metaclass=_MenuMeta):
         ---------
         MenuError
             Tried to use ``react`` when the menu had not been started.
-        discord.HTTPException
+        diskord.HTTPException
             Removing the reaction failed.
         """
 
@@ -529,13 +529,13 @@ class Menu(metaclass=_MenuMeta):
 
     def reaction_check(self, payload):
         """The function that is used to check whether the payload should be processed.
-        This is passed to :meth:`discord.ext.commands.Bot.wait_for <Bot.wait_for>`.
+        This is passed to :meth:`diskord.ext.commands.Bot.wait_for <Bot.wait_for>`.
 
         There should be no reason to override this function for most users.
 
         Parameters
         ------------
-        payload: :class:`discord.RawReactionActionEvent`
+        payload: :class:`diskord.RawReactionActionEvent`
             The payload to check.
 
         Returns
@@ -671,7 +671,7 @@ class Menu(metaclass=_MenuMeta):
         -----------
         ctx: :class:`Context`
             The invocation context to use.
-        channel: :class:`discord.abc.Messageable`
+        channel: :class:`diskord.abc.Messageable`
             The messageable to send the message to. If not given
             then it defaults to the channel in the context.
         wait: :class:`bool`
@@ -682,7 +682,7 @@ class Menu(metaclass=_MenuMeta):
         -------
         MenuError
             An error happened when verifying permissions.
-        discord.HTTPException
+        diskord.HTTPException
             Adding a reaction failed.
         """
 
@@ -698,7 +698,7 @@ class Menu(metaclass=_MenuMeta):
         channel = channel or ctx.channel
         me = channel.guild.me if hasattr(channel, 'guild') else ctx.bot.user
         permissions = channel.permissions_for(me)
-        self.__me = discord.Object(id=me.id)
+        self.__me = diskord.Object(id=me.id)
         self._verify_permissions(ctx, channel, permissions)
         self._event.clear()
         msg = self.message
@@ -751,12 +751,12 @@ class Menu(metaclass=_MenuMeta):
         ------------
         ctx: :class:`Context`
             The invocation context to use.
-        channel: :class:`discord.abc.Messageable`
+        channel: :class:`diskord.abc.Messageable`
             The messageable to send the message to.
 
         Returns
         --------
-        :class:`discord.Message`
+        :class:`diskord.Message`
             The message that has been sent.
         """
         raise NotImplementedError
@@ -862,16 +862,16 @@ class PageSource:
         This method must return one of the following types.
 
         If this method returns a ``str`` then it is interpreted as returning
-        the ``content`` keyword argument in :meth:`discord.Message.edit`
-        and :meth:`discord.abc.Messageable.send`.
+        the ``content`` keyword argument in :meth:`diskord.Message.edit`
+        and :meth:`diskord.abc.Messageable.send`.
 
-        If this method returns a :class:`discord.Embed` then it is interpreted
-        as returning the ``embed`` keyword argument in :meth:`discord.Message.edit`
-        and :meth:`discord.abc.Messageable.send`.
+        If this method returns a :class:`diskord.Embed` then it is interpreted
+        as returning the ``embed`` keyword argument in :meth:`diskord.Message.edit`
+        and :meth:`diskord.abc.Messageable.send`.
 
         If this method returns a ``dict`` then it is interpreted as the
-        keyword-arguments that are used in both :meth:`discord.Message.edit`
-        and :meth:`discord.abc.Messageable.send`. The two of interest are
+        keyword-arguments that are used in both :meth:`diskord.Message.edit`
+        and :meth:`diskord.abc.Messageable.send`. The two of interest are
         ``embed`` and ``content``.
 
         Parameters
@@ -883,7 +883,7 @@ class PageSource:
 
         Returns
         ---------
-        Union[:class:`str`, :class:`discord.Embed`, :class:`dict`]
+        Union[:class:`str`, :class:`diskord.Embed`, :class:`dict`]
             See above.
         """
         raise NotImplementedError
@@ -935,12 +935,12 @@ class MenuPages(Menu):
         return self._source.is_paginating()
 
     async def _get_kwargs_from_page(self, page):
-        value = await discord.utils.maybe_coroutine(self._source.format_page, self, page)
+        value = await diskord.utils.maybe_coroutine(self._source.format_page, self, page)
         if isinstance(value, dict):
             return value
         elif isinstance(value, str):
             return { 'content': value, 'embed': None }
-        elif isinstance(value, discord.Embed):
+        elif isinstance(value, diskord.Embed):
             return { 'embed': value, 'content': None }
 
     async def show_page(self, page_number):
