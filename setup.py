@@ -2,7 +2,7 @@ from setuptools import setup
 import re
 
 version = ''
-with open('discord/ext/menus/__init__.py') as f:
+with open('diskord/ext/menus/__init__.py') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)
 
 if not version:
@@ -25,13 +25,13 @@ if version.endswith(('a', 'b', 'rc')):
     except Exception:
         pass
 
-setup(name='discord-ext-menus',
-      author='Rapptz',
-      url='https://github.com/Rapptz/discord-ext-menus',
+setup(name='diskord-ext-menus',
+      author='NerdGuyAhmad',
+      url='https://github.com/diskord/diskord-ext-menus',
       version=version,
-      packages=['discord.ext.menus'],
+      packages=['diskord.ext.menus'],
       license='MIT',
-      description='An extension module to make reaction based menus with discord.py',
-      install_requires=['discord.py>=1.2.5'],
+      description='An extension module to make reaction based menus with diskord.',
+      install_requires=['diskord>=2.5.0'],
       python_requires='>=3.5.3'
 )
