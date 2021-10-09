@@ -25,7 +25,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import asyncio
-import discord
+import diskord
 
 import itertools
 import inspect
@@ -37,7 +37,7 @@ from collections import OrderedDict, namedtuple
 # Needed for the setup.py script
 __version__ = '1.0.0-a'
 
-# consistency with the `discord` namespaced logging
+# consistency with the `diskord` namespaced logging
 log = logging.getLogger(__name__)
 
 class MenuError(Exception):
@@ -106,7 +106,7 @@ class First(Position):
 _custom_emoji = re.compile(r'<?(?P<animated>a)?:?(?P<name>[A-Za-z0-9\_]+):(?P<id>[0-9]{13,20})>?')
 
 def _cast_emoji(obj, *, _custom_emoji=_custom_emoji):
-    if isinstance(obj, discord.PartialEmoji):
+    if isinstance(obj, diskord.PartialEmoji):
         return obj
 
     obj = str(obj)
@@ -116,8 +116,8 @@ def _cast_emoji(obj, *, _custom_emoji=_custom_emoji):
         animated = bool(groups['animated'])
         emoji_id = int(groups['id'])
         name = groups['name']
-        return discord.PartialEmoji(name=name, animated=animated, id=emoji_id)
-    return discord.PartialEmoji(name=obj, id=None, animated=False)
+        return diskord.PartialEmoji(name=name, animated=animated, id=emoji_id)
+    return diskord.PartialEmoji(name=obj, id=None, animated=False)
 
 class Button:
     """Represents a reaction-style button for the :class:`Menu`.
@@ -127,13 +127,13 @@ class Button:
     :func:`button`.
 
     The action must have both a ``self`` and a ``payload`` parameter
-    of type :class:`discord.RawReactionActionEvent`.
+    of type :class:`diskord.RawReactionActionEvent`.
 
     Attributes
     ------------
-    emoji: :class:`discord.PartialEmoji`
+    emoji: :class:`diskord.PartialEmoji`
         The emoji to use as the button. Note that passing a string will
-        transform it into a :class:`discord.PartialEmoji`.
+        transform it into a :class:`diskord.PartialEmoji`.
     action
         A coroutine that is called when the button is pressed.
     skip_if: Optional[Callable[[:class:`Menu`], :class:`bool`]]
@@ -387,7 +387,7 @@ class Menu(metaclass=_MenuMeta):
         ---------
         MenuError
             Tried to use ``react`` when the menu had not been started.
-        discord.HTTPException
+        diskord.HTTPException
             Adding the reaction failed.
         """
 
@@ -399,7 +399,7 @@ class Menu(metaclass=_MenuMeta):
                     # Add the reaction
                     try:
                         await self.message.add_reaction(button.emoji)
-                    except discord.HTTPException:
+                    except diskord.HTTPException:
                         raise
                     else:
                         # Update the cache to have the value
@@ -475,7 +475,7 @@ class Menu(metaclass=_MenuMeta):
         ---------
         MenuError
             Tried to use ``react`` when the menu had not been started.
-        discord.HTTPException
+        diskord.HTTPException
             Clearing the reactions failed.
         """
 
@@ -616,7 +616,7 @@ class Menu(metaclass=_MenuMeta):
                     for button_emoji in self.buttons:
                         try:
                             await self.message.remove_reaction(button_emoji, self.__me)
-                        except discord.HTTPException:
+                        except diskord.HTTPException:
                             continue
             except Exception:
                 pass
@@ -628,7 +628,7 @@ class Menu(metaclass=_MenuMeta):
 
         Parameters
         -----------
-        payload: :class:`discord.RawReactionActionEvent`
+        payload: :class:`diskord.RawReactionActionEvent`
             The reaction event that triggered this update.
         """
         button = self.buttons[payload.emoji]
